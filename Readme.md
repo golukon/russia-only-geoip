@@ -1,105 +1,45 @@
 # Что это?
 
-Этот проект каждые 6 часов автоматически генерирует GeoIP файлы, в которые включены списки заблокированных Роскомнадзором адресов и подсетей для различного рода маршрутизаторов трафика и Proxy/VPN приложений.
+Этот проект каждый день в 00:00 UTC автоматически генерирует `geoip.dat` с российскими IPv4 для прокси/VPN-приложений (Xray, V2Ray и др.). Таким образом, маршрут по умолчанию должен быть `proxy`, совпадение с адресом из файла — `direct`. Файл получается небольшим (около `90 Кб`, удобен для роутеров), также отпадает необходимость постоянно включать/выключать VPN.
 
-Основным источником данных на данный момент является [antifilter.download](https://antifilter.download/) и [community.antifilter.download](https://community.antifilter.download/)
+Источник данных: [scanitex.com](https://scanitex.com/ru/resources/ip-ranges/ru)
 
-На данный момент поддерживаются следующие выходные форматы:
+### Содержимое geoip.dat
 
-- `geoip.dat` ([V2Ray](https://github.com/v2fly/v2ray-core), [Xray-core](https://github.com/XTLS/Xray-core), [v2rayN](https://github.com/2dust/v2rayN) и прочие)
-- MaxMind `mmdb`
-- [sing-box](https://github.com/SagerNet/sing-box) `srs`
-- mihomo `mrs`
-- Clash правила
-- SURGE правила
-- nginx allow и deny шаблоны
+- `geoip:ru` — список всех российских IPv4-адресов
+- `geoip:private` — приватные и зарезервированные сети, например `10.0.0.0/8`, `127.0.0.0/8`, `192.168.0.0/16`
 
-## GeoIP и MaxMind
+## Смежные проекты
 
+- [@golukon/russia-only-geosite](https://github.com/golukon/russia-only-geosite) — файл `geosite.dat` с сайтами, доступ к которым разрешён внутри России
 
-Основные категории:
+## Пример конфигурации для v2rayA (совместно с geosite.dat)
 
-- `ru-blocked` содержит `ipresolve.lst` и `subnet.lst` сервиса antifilter.download
-- `ru-blocked-community` содержит `community.lst` сервиса community.antifilter.download и IPv6 подсети Telegram
-- `re-filter` содержит `ipsum.lst` из [re:filter](https://github.com/1andrevich/Re-filter-lists)
+```
+default: proxy
+ip(geoip:private)->direct
 
-Для вашего удобства в файлы включены несколько дополнительных категорий:
+# write your own rules below
+ip(geoip:ru)->direct
+domain(geosite:ru-inside)->direct
+```
 
-- `geoip:cloudflare`
-- `geoip:cloudfront`
-- `geoip:facebook`
-- `geoip:fastly`
-- `geoip:google`
-- `geoip:netflix`
-- `geoip:telegram`
-- `geoip:twitter`
-- `geoip:ddos-guard`
-- `geoip:yandex`
+## Скачать
 
-### Содержимое файлов
+По ссылкам ниже всегда доступна последняя версия файлов.
 
-- `geoip.dat`, `Country.mmdb` - содержит полный набор данных (оригинальный geoip + все категории)
-- `geoip-asn.dat`, `Country-asn.mmdb` - содержит **только** дополнительные категории
-- `geoip-ru-only.dat`, `Country-ru-only.mmdb` - содержит **только** списки заблокированных сетей и адресов
-- `ru-blocked.dat`, `ru-blocked-community.dat`, `re-filter.dat` - отдельно соответствующие категории (только geoip.dat формат)
-- `private.dat` - Приватные/Зарезервированные сети ([RFC6890](https://datatracker.ietf.org/doc/html/rfc6890))
+- **github**
+    - [https://raw.githubusercontent.com/golukon/russia-only-geoip/release/geoip.dat](https://raw.githubusercontent.com/golukon/russia-only-geoip/release/geoip.dat)
+    - Hashsum: [https://raw.githubusercontent.com/golukon/russia-only-geoip/release/geoip.dat.sha256sum](https://raw.githubusercontent.com/golukon/russia-only-geoip/release/geoip.dat.sha256sum)
+- **JSDelivr**
+    - [https://cdn.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat](https://cdn.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat)
+    - Hashsum: [https://cdn.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat.sha256sum](https://cdn.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat.sha256sum)
+- **Fastly + JSDelivr**
+    - [https://fastly.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat](https://fastly.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat)
+    - Hashsum: [https://fastly.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat.sha256sum](https://fastly.jsdelivr.net/gh/golukon/russia-only-geoip@release/geoip.dat.sha256sum)
 
-### Содержимое директорий
+## Благодарности
 
-Во всех директориях содержимое разбито по принципу "1 файл = 1 категория"
-
-- `dat` - `geoip.dat` формат
-- `text` - Текстовые списки
-- `srs` - sing-box формат
-- `clash` - Clash формат (включая классическую и ip-cidr нотацию)
-- `mrs` - mihomo формат
-- `surge` - SURGE формат
-- `nginx` - allow и deny правила для nginx
-
-
-# Cкачать
-
-По данным адресам всегда доступна последняя версия файла.
-
-- **geoip.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip.dat)
-- **geoip-asn.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip-asn.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip-asn.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip-asn.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip-asn.dat)
-- **geoip-ru-only.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip-ru-only.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip-ru-only.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip-ru-only.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/geoip-ru-only.dat)
-- **ru-blocked.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/ru-blocked.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/ru-blocked.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/ru-blocked.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/ru-blocked.dat)
-- **ru-blocked-community.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/ru-blocked-community.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/ru-blocked-community.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/ru-blocked-community.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/ru-blocked-community.dat)
-- **re-filter.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/re-filter.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/re-filter.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/re-filter.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/re-filter.dat)
-- **private.dat**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/private.dat](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/private.dat)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/private.dat](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/private.dat)
-- **Country.mmdb**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country.mmdb](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country.mmdb)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country.mmdb](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country.mmdb)
-- **Country-asn.mmdb**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country-asn.mmdb](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country-asn.mmdb)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country-asn.mmdb](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country-asn.mmdb)
-- **Country-ru-only.mmdb**
-    - [https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country-ru-only.mmdb](https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/Country-ru-only.mmdb)
-    - [https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country-ru-only.mmdb](https://cdn.jsdelivr.net/gh/runetfreedom/russia-blocked-geoip@release/Country-ru-only.mmdb)
-
-## Cмежные проекты
-
-- [@runetfreedom/russia-v2ray-rules-dat](https://github.com/runetfreedom/russia-v2ray-rules-dat) - единый источник geo файлов для v2ray/xray/sing-box
-- [@runetfreedom/russia-blocked-geosite](https://github.com/runetfreedom/russia-blocked-geosite) - генерация geosite файлов
-- [@runetfreedom/russia-v2ray-custom-routing-list](https://github.com/runetfreedom/russia-v2ray-custom-routing-list) - правила маршрутизации для различных клиентов
-- [@runetfreedom/geodat2srs](https://github.com/runetfreedom/geodat2srs) - конвертер geoip/geosite.dat в sing-box srs
-
-
-# Credits 
-
-Данный репозиторий вдохновлен и частично основан на [Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip)
+- [@Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) — сборщик geoip.dat
+- [@runetfreedom/russia-blocked-geoip](https://github.com/runetfreedom/russia-blocked-geoip) — шаблон репозитория
+- [scanitex.com](https://scanitex.com/ru/resources/ip-ranges/ru) — список российских ip адресов

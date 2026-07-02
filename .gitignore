@@ -23,3 +23,6 @@ go.work.sum
 
 # env file
 .env
+
+# Downloaded IP ranges list (tracked in the "ip-russia" branch instead)
+/ip-russia.txt
