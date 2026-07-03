@@ -12,6 +12,7 @@
 ## Смежные проекты
 
 - [@golukon/russia-only-geosite](https://github.com/golukon/russia-only-geosite) — файл `geosite.dat` с сайтами, доступ к которым разрешён внутри России
+- [@golukon/russia-v2ray-rules-lite](https://github.com/golukon/russia-v2ray-rules-lite) — репозиторий со всеми geo файлами для xray и sing-box
 
 ## Пример конфигурации для v2rayA (совместно с geosite.dat)
 
@@ -22,6 +23,47 @@ ip(geoip:private)->direct
 # write your own rules below
 ip(geoip:ru)->direct
 domain(geosite:ru-inside)->direct
+```
+
+## Пример конфигурации для v2rayN/v2rayNG (совместно с geosite.dat)
+
+```
+[
+    {
+        "enabled": true,
+        "ip": [
+            "geoip:private"
+        ],
+        "locked": false,
+        "outboundTag": "direct",
+        "remarks": "RU-0 [Приватные сети напрямую]"
+    },
+    {
+        "enabled": true,
+        "ip": [
+            "geoip:ru"
+        ],
+        "locked": false,
+        "outboundTag": "direct",
+        "remarks": "RU-0 [Российские IPv4 напрямую]"
+    },
+    {
+        "domain": [
+            "geosite:ru-inside"
+        ],
+        "enabled": true,
+        "locked": false,
+        "outboundTag": "direct",
+        "remarks": "RU-0 [Российские домены напрямую]"
+    },
+    {
+        "enabled": true,
+        "locked": false,
+        "outboundTag": "proxy",
+        "port": "0-65535",
+        "remarks": "RU-0 [Остальное прокси]"
+    }
+]
 ```
 
 ## Скачать
