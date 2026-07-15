@@ -27,7 +27,7 @@ jobs:
 
       - name: Download Russian IP ranges
         run: |
-          curl -fsSL -o ./ip-russia.txt "https://scanitex.com/ru/resources/ip-ranges/ru/download/cidr"
+          curl -fsSL -o ./ip-russia.txt "https://iwik.org/ipcountry/RU.cidr"
 
       - name: Commit updated IP ranges list to "ip-russia" branch
         env:
